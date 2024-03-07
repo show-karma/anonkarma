@@ -41,7 +41,7 @@ export default function Home() {
         </div>
       </div>
 
-      <section className="ring-1 ring-zinc-700 rounded-xl p-10 w-50">
+      <section className="ring-1 ring-zinc-700 rounded-xl p-10 w-50 min-w-50">
         {!account?.address ? (
           <div className="flex justify-center items-center flex-col">
             <h3 className="text-md mb-5">Connect your wallet to get started</h3>
@@ -55,7 +55,7 @@ export default function Home() {
                   setIdentity(new Identity(account.address + karmaSecret));
                   setShowIdentity(true);
                 }}
-                className="font-bold"
+                className="font-bold mr-5"
               >
                 Generate Karma Anon ID
               </Button>
@@ -63,7 +63,7 @@ export default function Home() {
             </div>
 
             {showIdentity && identity && (
-              <div className="mt-10 flex justify-center items-center flex-col w-full">
+              <div className="mt-10 flex justify-center items-between flex-col w-full">
                 <div className="mb-5 text-center">
                   <Badge>Public Key</Badge>
                   <div className="text-md m-2">
