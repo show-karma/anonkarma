@@ -41,49 +41,64 @@ export default function Home() {
         </div>
       </div>
 
-      <section className="ring-1 ring-zinc-700 rounded-xl p-10 w-50 min-w-50">
-        {!account?.address ? (
-          <div className="flex justify-center items-center flex-col">
-            <h3 className="text-md mb-5">Connect your wallet to get started</h3>
-            <ConnectButton />
-          </div>
-        ) : (
-          <div className="flex justify-center items-start flex-col">
-            <div className="flex w-full justify-between items-center">
-              <Button
-                onClick={() => {
-                  setIdentity(new Identity(account.address + karmaSecret));
-                  setShowIdentity(true);
-                }}
-                className="font-bold mr-5"
-              >
-                Generate Karma Anon ID
-              </Button>
+      <section className="lg:max-w-5xl lg:w-full ">
+        <div className="ring-1 ring-zinc-700 rounded-xl p-8 w-full">
+          {!account?.address ? (
+            <div className="flex justify-center items-center flex-col">
+              <h3 className="text-md mb-5">
+                Connect your wallet to get started
+              </h3>
               <ConnectButton />
             </div>
-
-            {showIdentity && identity && (
-              <div className="mt-10 flex justify-center items-between flex-col w-full">
-                <div className="mb-5 text-center">
-                  <Badge>Public Key</Badge>
-                  <div className="text-md m-2">
-                    {String(identity?.publicKey[0])}
-                  </div>
-                </div>
-                <div className="mb-5 text-center">
-                  <Badge>Commitment</Badge>
-                  <div className="text-md m-2">
-                    {String(identity?.commitment)}
-                  </div>
-                </div>
+          ) : (
+            <div className="flex justify-center items-start flex-col">
+              <div className="flex w-full justify-between items-center">
+                <Button
+                  onClick={() => {
+                    setIdentity(new Identity(account.address + karmaSecret));
+                    setShowIdentity(true);
+                  }}
+                  className="font-bold mr-5"
+                >
+                  Generate Karma Anon ID
+                </Button>
+                <ConnectButton />
               </div>
-            )}
-          </div>
-        )}
+
+              {(showIdentity || account?.address) && identity && (
+                <div className="mt-10 flex justify-center items-between flex-col w-full">
+                  <div className="text-center rounded p-2">
+                    <Badge>Public Key</Badge>
+                    <div className="text-md mt-2">
+                      {String(identity?.publicKey[0])}
+                    </div>
+                  </div>
+                  <div className="mt-5 text-center rounded pt-2 px-2">
+                    <Badge>Commitment</Badge>
+                    <div className="text-md mt-2">
+                      {String(identity?.commitment)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        <p className="text-md mt-3 text-center text-zinc-600">
+          You can alternately generate committment by running this site locally
+          using this{" "}
+          <a
+            className="font-bold"
+            target="_blank"
+            href="https://github.com/show-karma/anonkarma"
+          >
+            code ↗
+          </a>
+        </p>
       </section>
 
-      <section className="mt-10">
-        <h3 className="text-md ml-5">
+      <section className="mt-10 ">
+        <h3 className="text-md ml-5 text-zinc-600 mb-1">
           Quick Links for{" "}
           <span className="font-bold text-md">
             <a target="_blank" href="https://www.karmahq.xyz/">
@@ -91,6 +106,7 @@ export default function Home() {
             </a>
           </span>
         </h3>
+
         <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
           <a
             href="https://gap.karmahq.xyz/"
@@ -123,8 +139,8 @@ export default function Home() {
               </span>
             </h2>
             <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Dashboards that enable DAOs to facilitate delegate self-onboarding
-              and information management.
+              Enable DAOs to facilitate delegate self-onboarding and information
+              management.
             </p>
           </a>
 
@@ -159,7 +175,7 @@ export default function Home() {
               </span>
             </h2>
             <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-              Bot to help you build reputation. Built by team Karma
+              Bot to help you build reputation. Now available on Farcaster!
             </p>
           </a>
         </div>
