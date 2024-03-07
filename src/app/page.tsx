@@ -87,7 +87,7 @@ export default function Home() {
           Quick Links for{" "}
           <span className="font-bold text-md">
             <a target="_blank" href="https://www.karmahq.xyz/">
-              karma.xyz
+              karmahq.xyz
             </a>
           </span>
         </h3>
