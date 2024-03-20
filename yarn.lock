@@ -1134,54 +1134,56 @@
     "@noble/hashes" "~1.3.2"
     "@scure/base" "~1.1.4"
 
-"@semaphore-protocol/core@4.0.0-beta.2":
-  version "4.0.0-beta.2"
-  resolved "https://registry.npmjs.org/@semaphore-protocol/core/-/core-4.0.0-beta.2.tgz#939feee6a60f73481961ff713b1641d25735c076"
-  integrity sha512-E3fbVr2i4BNotHUqBBk1N2sU0z1PleDVsVmL29LZQoT4mXig5xAf8MmdHmFQ4FGsGeb0Jn6fgOI7M2ugcORYww==
+"@semaphore-protocol/core@4.0.0-beta.4":
+  version "4.0.0-beta.4"
+  resolved "https://registry.npmjs.org/@semaphore-protocol/core/-/core-4.0.0-beta.4.tgz#d42d4ad05275d6e1235674ab5bfc6753cf7dc88a"
+  integrity sha512-a8zWUxHpoAVL2ghIrhiX/vl3d5ihrsEOUjykFtP5Zb93IUxppfDwIA8J/80yq0sncLAowxz1dPhvSA7sj+7z3A==
   dependencies:
-    "@semaphore-protocol/group" "4.0.0-beta.2"
-    "@semaphore-protocol/identity" "4.0.0-beta.2"
-    "@semaphore-protocol/proof" "4.0.0-beta.2"
+    "@semaphore-protocol/group" "4.0.0-beta.4"
+    "@semaphore-protocol/identity" "4.0.0-beta.4"
+    "@semaphore-protocol/proof" "4.0.0-beta.4"
 
-"@semaphore-protocol/data@4.0.0-beta.2":
-  version "4.0.0-beta.2"
-  resolved "https://registry.npmjs.org/@semaphore-protocol/data/-/data-4.0.0-beta.2.tgz#d5764df96b83231632fc92944ab3b1fe857f266a"
-  integrity sha512-LtW9e3YPOwqcMK/ERFr0zAgENs1fHdPU7E1UBrADM0iUwIa+ehojOG4GfSG7ZZfAnNs5VuxLEdaCqVeu23rkWw==
+"@semaphore-protocol/data@4.0.0-beta.4":
+  version "4.0.0-beta.4"
+  resolved "https://registry.npmjs.org/@semaphore-protocol/data/-/data-4.0.0-beta.4.tgz#750e5342236c4e1eda0979c4f8b50d85394498d7"
+  integrity sha512-PdViVsx/CfJHFXOcj1EtoCPpURPGantn4BIentd63LXXDWaGk5xTVKnopiKYybp5qv2j3/IJQ5GSiOFZYZ/eaw==
   dependencies:
     axios "1.6.6"
     ethers "6.11.0"
 
-"@semaphore-protocol/group@4.0.0-beta.2":
-  version "4.0.0-beta.2"
-  resolved "https://registry.npmjs.org/@semaphore-protocol/group/-/group-4.0.0-beta.2.tgz#836e7589e3f3387353a6e4e16c961729f1f69531"
-  integrity sha512-5kQ01yeaGjLqQibVWSl2gKH5tHaHoVOYZpGWf4BNp0DPfArbO8ooeEXcEQORMRir4+Xw4KNSbrh7hhoVZ4LStQ==
+"@semaphore-protocol/group@4.0.0-beta.4":
+  version "4.0.0-beta.4"
+  resolved "https://registry.npmjs.org/@semaphore-protocol/group/-/group-4.0.0-beta.4.tgz#bf41c4e2927ae98aca30f296c84c9a7e748c20dd"
+  integrity sha512-i2FirZrD77+ITddBm7u5bgzpTWBOoyBUxFnrZlIQ15J1iWKIqJYRFLrLsGAzJhlR9WIY4xkTLuQ6Y3moTlYBWA==
   dependencies:
     "@zk-kit/imt" "2.0.0-beta.2"
 
-"@semaphore-protocol/identity@4.0.0-beta.2":
-  version "4.0.0-beta.2"
-  resolved "https://registry.npmjs.org/@semaphore-protocol/identity/-/identity-4.0.0-beta.2.tgz#bee3d52910fdf96aa7b3770a2e554b0430923e6e"
-  integrity sha512-BKN0nP5p3N8S4S68QwmTjFeTcgbxsHch2wbpq/xsRTkBiOgXNrBm2Z1aTaW3ZLUG0sLZg5ymIwXSCJiFRwHCow==
+"@semaphore-protocol/identity@4.0.0-beta.4":
+  version "4.0.0-beta.4"
+  resolved "https://registry.npmjs.org/@semaphore-protocol/identity/-/identity-4.0.0-beta.4.tgz#cd1955e6c6bfc95fd600df1821895eed44198f6f"
+  integrity sha512-7XW5u2poo4aove5aSJ02cPEmoGT1vT0LXP4QR9kVpYizur3MHJgkx9YahhHOkGL1qikv8J9pj/OjUa9plKgjoA==
   dependencies:
-    "@zk-kit/baby-jubjub" "0.2.0"
-    "@zk-kit/eddsa-poseidon" "0.6.0"
-    "@zk-kit/utils" "0.3.0"
+    "@zk-kit/baby-jubjub" "0.3.0"
+    "@zk-kit/eddsa-poseidon" "0.10.0"
+    "@zk-kit/utils" "0.8.1"
     poseidon-lite "0.2.0"
 
-"@semaphore-protocol/proof@4.0.0-beta.2":
-  version "4.0.0-beta.2"
-  resolved "https://registry.npmjs.org/@semaphore-protocol/proof/-/proof-4.0.0-beta.2.tgz#799327375ffa8accfe4a6bb4e52f7ed2928daadd"
-  integrity sha512-cnDlOXpZ0NdU74pIQQFzzm0Ipui4KfMWBYLAWgT7MreABbtmPH7OmNL+d9giNE8x90BMbnhVDH2/mvBc4O7Wgw==
+"@semaphore-protocol/proof@4.0.0-beta.4":
+  version "4.0.0-beta.4"
+  resolved "https://registry.npmjs.org/@semaphore-protocol/proof/-/proof-4.0.0-beta.4.tgz#c8d106fb811e719b3932810784df16470bbcee79"
+  integrity sha512-j64Qa1PJtjYq5W28RQQgMOOIMBhjtlE0tf+2fVSbD0mXCOZp8s2Ni1kCIJX+i1A5xys0vflGNPnD1grZQv/ekQ==
   dependencies:
-    "@semaphore-protocol/utils" "4.0.0-beta.2"
-    "@zk-kit/utils" "0.3.0"
+    "@semaphore-protocol/utils" "4.0.0-beta.4"
+    "@zk-kit/utils" "0.8.1"
     ethers "6.10.0"
     snarkjs "0.7.3"
 
-"@semaphore-protocol/utils@4.0.0-beta.2":
-  version "4.0.0-beta.2"
-  resolved "https://registry.npmjs.org/@semaphore-protocol/utils/-/utils-4.0.0-beta.2.tgz#ae1a11afb85535d1d1079284fe74b5387bfeaf80"
-  integrity sha512-0C9h8AD9l6htxny6z8baLjs/zbwNu8NIL+nH077pNtNlt9yKITBByFbpMZfG40z+VJgRfzN+uiLJLwA8oVHySQ==
+"@semaphore-protocol/utils@4.0.0-beta.4":
+  version "4.0.0-beta.4"
+  resolved "https://registry.npmjs.org/@semaphore-protocol/utils/-/utils-4.0.0-beta.4.tgz#2325a587521cbf8a8945098ce85fd9cd073d7d7b"
+  integrity sha512-XqGZqix71UmFWJ9ct+Sm2JBloxF1UiZ4znNFe22N2uIHmEmObzWOdL9McbnNkNyJl6IxvlMciolXQ7sng2qI3Q==
+  dependencies:
+    ethers "^6.11.1"
 
 "@socket.io/component-emitter@~3.1.0":
   version "3.1.0"
@@ -1811,30 +1813,40 @@
     "@walletconnect/window-getters" "^1.0.1"
     tslib "1.14.1"
 
-"@zk-kit/baby-jubjub@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@zk-kit/baby-jubjub/-/baby-jubjub-0.2.0.tgz#71c5396ddacb97e4e3db677933f74bde3332b236"
-  integrity sha512-pqiPq621oKpwiIkf1KcVh5MdbFX0V67s9gCmiEkhLMeafZaIXEwVt5qmIu1d2HB4mjXgr4Ys8Jpn2Rw4KXxnFQ==
+"@zk-kit/baby-jubjub@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.npmjs.org/@zk-kit/baby-jubjub/-/baby-jubjub-0.3.0.tgz#78b8d3226670dd02dc8ced713aec64d6bb2a6e62"
+  integrity sha512-mA3/M/+4C2vDtc0SpXf/q/nsvwBh+s42ou176sgDzqIBQD/u/N+LaLGorDh+X5AD3dVMHb8rheFpnnrJmjsqdA==
   dependencies:
-    "@zk-kit/utils" "0.3.0"
+    "@zk-kit/utils" "0.6.0"
 
-"@zk-kit/eddsa-poseidon@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/@zk-kit/eddsa-poseidon/-/eddsa-poseidon-0.6.0.tgz#8ab0527a833b1d9033a6bf6be5cb6963eb31c0ab"
-  integrity sha512-vsW8zt5f6QPz/dl+D7djKwcMgCRv09ajJHzOxgy0EfTAG6KLBUc6+qdhvLByQy+IEM9PvcRSHXmgMWInNqtFTw==
+"@zk-kit/eddsa-poseidon@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmjs.org/@zk-kit/eddsa-poseidon/-/eddsa-poseidon-0.10.0.tgz#3911ec364d9a286e9eca0d45a31c42db2e33f3f0"
+  integrity sha512-vfHupJeoj0YojulF+SUbeOD6MOamWV6uU/HVFwB7sJNA0N7gnzcjaN1aC5OYr0+5PHui/SYebzKA0LNCL+7M9g==
   dependencies:
-    "@zk-kit/baby-jubjub" "0.2.0"
-    "@zk-kit/utils" "0.3.0"
+    "@zk-kit/baby-jubjub" "0.3.0"
+    "@zk-kit/utils" "0.8.1"
+    buffer "6.0.3"
 
 "@zk-kit/imt@2.0.0-beta.2":
   version "2.0.0-beta.2"
   resolved "https://registry.npmjs.org/@zk-kit/imt/-/imt-2.0.0-beta.2.tgz#6d95ff186cda57acfddce007d1ef3beea56d1da1"
   integrity sha512-pTzGNW7SWNASwXGMOxvgNtlweX0Gak9IT5Bb4Xff7kJgQG1/CQy2GPwK74T+vCcpElJ3xQHgX+XJUyj7TeJRMg==
 
-"@zk-kit/utils@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/@zk-kit/utils/-/utils-0.3.0.tgz#ca85ab40540ee76b3a09b91df66a55d7f319a71d"
-  integrity sha512-yVBczOwOSV+evSgdsJ0tpPn3oQpbL7a7fRqANDogleaLLte1IFxKTFLz3WNcgd28Asq2guMGiU6SmiEc61uHAg==
+"@zk-kit/utils@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/@zk-kit/utils/-/utils-0.6.0.tgz#30124e98df8e29f7af31e19ce4dc6302f178c0a4"
+  integrity sha512-sUF1yVjlGmm7/NIN/+d+N8WOcI77bTzgV5+vZmp/S7lXcy4fmO+5TdHERRsDbs8Ep8K33EOC6V+U+JXzmjSe5A==
+  dependencies:
+    buffer "^6.0.3"
+
+"@zk-kit/utils@0.8.1":
+  version "0.8.1"
+  resolved "https://registry.npmjs.org/@zk-kit/utils/-/utils-0.8.1.tgz#9d358542e6b223dde35f32f3e161d1d3a41b0644"
+  integrity sha512-m5cvnYo5IBZQCO8H5X0Mw3rGRGEoSqlYXVVF1+4M9IT3olDWcJHLPRqtYGF9zNf+vXV/21srpZ0hX3X2Lzp1TQ==
+  dependencies:
+    buffer "^6.0.3"
 
 abitype@0.9.8:
   version "0.9.8"
@@ -2235,7 +2247,7 @@ browserslist@^4.23.0:
     node-releases "^2.0.14"
     update-browserslist-db "^1.0.13"
 
-buffer@^6.0.3:
+buffer@6.0.3, buffer@^6.0.3:
   version "6.0.3"
   resolved "https://registry.npmjs.org/buffer/-/buffer-6.0.3.tgz#2ace578459cc8fbe2a70aaa8f52ee63b6a74c6c6"
   integrity sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==
@@ -3216,6 +3228,19 @@ ethers@6.11.0:
   version "6.11.0"
   resolved "https://registry.npmjs.org/ethers/-/ethers-6.11.0.tgz#6d3e884ad36454c29d4662ae49439d5d04556c66"
   integrity sha512-kPHNTnhVWiWU6AVo6CAeTjXEK24SpCXyZvwG9ROFjT0Vlux0EOhWKBAeC+45iDj80QNJTYaT1SDEmeunT0vDNw==
+  dependencies:
+    "@adraffy/ens-normalize" "1.10.1"
+    "@noble/curves" "1.2.0"
+    "@noble/hashes" "1.3.2"
+    "@types/node" "18.15.13"
+    aes-js "4.0.0-beta.5"
+    tslib "2.4.0"
+    ws "8.5.0"
+
+ethers@^6.11.1:
+  version "6.11.1"
+  resolved "https://registry.npmjs.org/ethers/-/ethers-6.11.1.tgz#96aae00b627c2e35f9b0a4d65c7ab658259ee6af"
+  integrity sha512-mxTAE6wqJQAbp5QAe/+o+rXOID7Nw91OZXvgpjDa1r4fAbq2Nu314oEZSbjoRLacuCzs7kUC3clEvkCQowffGg==
   dependencies:
     "@adraffy/ens-normalize" "1.10.1"
     "@noble/curves" "1.2.0"
