@@ -15,11 +15,7 @@ export default function Home() {
 
   const karmaSecret = process.env.NEXT_PUBLIC_KARMA_SECRET || "karma";
 
-  useEffect(() => {
-    if (account) {
-      setIdentity(new Identity(account.address + karmaSecret));
-    }
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <main className="container flex min-h-screen flex-col items-center justify-between p-10">
@@ -55,7 +51,9 @@ export default function Home() {
               <div className="flex w-full justify-between items-center">
                 <Button
                   onClick={() => {
-                    setIdentity(new Identity(account.address + karmaSecret));
+                    setIdentity(
+                      new Identity(account.address?.toLowerCase() + karmaSecret)
+                    );
                     setShowIdentity(true);
                   }}
                   className="font-bold mr-5"
