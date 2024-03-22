@@ -7,13 +7,64 @@ import { Identity } from "@semaphore-protocol/identity";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Badge } from "@/components/ui/badge";
+import { createHash } from "crypto";
+import {
+  TooltipTrigger,
+  TooltipContent,
+  Tooltip,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+
+export function CopyToClipBoard({ text }: { text: string }) {
+  return (
+    <div
+      onClick={() => {
+        navigator.clipboard.writeText(text);
+      }}
+    >
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex justify-center items-center">
+              <ClipboardIcon className="ml-2 h-4 w-4" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="">
+            <p>Click to copy</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  );
+}
+
+function ClipboardIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+    </svg>
+  );
+}
 
 export default function Home() {
   const [identity, setIdentity] = useState<Identity | null>(null);
   const [showIdentity, setShowIdentity] = useState(false);
   const account = useAccount();
-
+  // TODO: Configure this secret in the environment variable
   const karmaSecret = process.env.NEXT_PUBLIC_KARMA_SECRET || "karma";
+  // TODO: ==================================================
 
   useEffect(() => {}, []);
 
@@ -52,7 +103,11 @@ export default function Home() {
                 <Button
                   onClick={() => {
                     setIdentity(
-                      new Identity(account.address?.toLowerCase() + karmaSecret)
+                      new Identity(
+                        createHash("sha256")
+                          .update(account.address?.toLowerCase() + karmaSecret)
+                          .digest("base64")
+                      )
                     );
                     setShowIdentity(true);
                   }}
@@ -67,14 +122,23 @@ export default function Home() {
                 <div className="mt-10 flex justify-center items-between flex-col w-full">
                   <div className="text-center rounded p-2">
                     <Badge>Public Key</Badge>
-                    <div className="text-md mt-2">
+                    <div className="text-md mt-2 flex justify-center items-center">
                       {String(identity?.publicKey[0])}
+                      <CopyToClipBoard text={String(identity?.publicKey[0])} />
+                    </div>
+                  </div>
+                  <div className="mt-5 text-center rounded pt-2 px-2">
+                    <Badge>Private Key</Badge>
+                    <div className="text-md mt-2 flex justify-center items-center">
+                      {String(identity?.privateKey)}
+                      <CopyToClipBoard text={String(identity?.privateKey)} />
                     </div>
                   </div>
                   <div className="mt-5 text-center rounded pt-2 px-2">
                     <Badge>Commitment</Badge>
-                    <div className="text-md mt-2">
+                    <div className="text-md mt-2 flex justify-center items-center">
                       {String(identity?.commitment)}
+                      <CopyToClipBoard text={String(identity?.commitment)} />
                     </div>
                   </div>
                 </div>
