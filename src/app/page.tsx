@@ -15,7 +15,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 
-export function CopyToClipBoard({ text }: { text: string }) {
+function CopyToClipBoard({ text }: { text: string }) {
   return (
     <div
       onClick={() => {
