@@ -1,13 +1,22 @@
 "use client";
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import { createHash } from "crypto";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { Group } from "@semaphore-protocol/group";
 import { Identity } from "@semaphore-protocol/identity";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Badge } from "@/components/ui/badge";
-import { createHash } from "crypto";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { generateProof } from "@semaphore-protocol/proof";
 import {
   TooltipTrigger,
   TooltipContent,
@@ -26,7 +35,21 @@ function CopyToClipBoard({ text }: { text: string }) {
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex justify-center items-center">
-              <ClipboardIcon className="ml-2 h-4 w-4" />
+              <svg
+                className="ml-2 h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+              </svg>
             </div>
           </TooltipTrigger>
           <TooltipContent className="">
@@ -38,55 +61,71 @@ function CopyToClipBoard({ text }: { text: string }) {
   );
 }
 
-function ClipboardIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-    </svg>
-  );
-}
-
 export default function Home() {
-  const [identity, setIdentity] = useState<Identity | null>(null);
-  const [showIdentity, setShowIdentity] = useState(false);
+  const searchParams = useSearchParams();
   const account = useAccount();
+
+  const [identity, setIdentity] = useState<Identity | null>(null);
+  const [group, setGroup] = useState<Group>(new Group([]));
+  const [showIdentity, setShowIdentity] = useState(false);
+  const [proof, setProof] = useState<any | null>(null);
+
+  const [groupId, setGroupId] = useState<string | null>(null);
+  const [scope, setScope] = useState<number>(0);
+  const [message, setMessage] = useState<string>("");
+  const [callbackUrl, setCallbackUrl] = useState<string>("");
+
   // TODO: Configure this secret in the environment variable
   const karmaSecret = process.env.NEXT_PUBLIC_KARMA_SECRET || "karma";
   // TODO: ==================================================
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    try {
+      const proofData = JSON.parse(atob(searchParams.get("proofData") as any));
+
+      setScope(proofData.scope);
+      setMessage(proofData.message);
+      setGroupId(proofData.groupId);
+      setCallbackUrl(proofData.callbackUrl);
+    } catch (e) {
+      console.error(e);
+      setProof(null);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (identity && groupId && message && scope && callbackUrl) {
+      axios
+        .get(`http://localhost:3002/semaphores/groups/${groupId}`)
+        .then((karmaGroup) => {
+          console.log(karmaGroup);
+          setGroup(
+            new Group(
+              karmaGroup.data.members.map((member: string) => BigInt(member))
+            )
+          );
+
+          if (group.members.length > 0) {
+            generateProof(identity, group, message, scope).then((proof) => {
+              console.log("Proof:", proof);
+              setProof(proof);
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          return { data: { members: [] } };
+        });
+    }
+  }, [groupId, message, scope, identity, callbackUrl, group.members.length]);
 
   return (
     <main className="container flex min-h-screen flex-col items-center justify-between p-10">
       <div className="absolute top-5 right-5">
         <ModeToggle />
       </div>
-      <div className="relative flex place-items-center">
-        <Image
-          className="relative"
-          src="/logo/logo-dark.png"
-          alt="Karma Logo"
-          width={180}
-          height={180}
-          priority
-        />
-        <div className="mr-10">
-          <div className="text-3xl font-bold">anonkarma</div>
-          <div className="text-lg ">zk identity provider</div>
-        </div>
-      </div>
+
+      <Header />
 
       <section className="lg:max-w-5xl lg:w-full ">
         <div className="ring-1 ring-zinc-700 rounded-xl p-8 w-full">
@@ -119,27 +158,149 @@ export default function Home() {
               </div>
 
               {(showIdentity || account?.address) && identity && (
-                <div className="mt-10 flex justify-center items-between flex-col w-full">
-                  <div className="text-center rounded p-2">
-                    <Badge>Public Key</Badge>
-                    <div className="text-md mt-2 flex justify-center items-center">
-                      {String(identity?.publicKey[0])}
-                      <CopyToClipBoard text={String(identity?.publicKey[0])} />
+                <div className="mt-10 justify-center items-between flex flex-col w-full">
+                  <div className="grid grid-cols-3 gap-5">
+                    <div className="text-center">
+                      <Badge
+                        variant={"outline"}
+                        className=" hover:bg-white hover:text-black"
+                      >
+                        Public Key{" "}
+                        <CopyToClipBoard
+                          text={String(identity?.publicKey[0])}
+                        />
+                      </Badge>
+                      <Input
+                        defaultValue={String(identity?.publicKey[0])}
+                        type="text"
+                        className="text-md text-center bg-zinc-900 mt-2 flex justify-center items-center"
+                      />
+                    </div>
+
+                    <div className="text-center">
+                      <Badge
+                        variant={"outline"}
+                        className=" hover:bg-white hover:text-black"
+                      >
+                        Private Key{" "}
+                        <CopyToClipBoard text={String(identity?.privateKey)} />
+                      </Badge>
+                      <Input
+                        defaultValue={String(identity?.privateKey)}
+                        type="text"
+                        className="text-md text-center bg-zinc-900 mt-2 flex justify-center items-center"
+                      />
+                    </div>
+                    <div className="text-center rounded">
+                      <Badge
+                        variant={"outline"}
+                        className=" hover:bg-white hover:text-black"
+                      >
+                        Commitment{" "}
+                        <CopyToClipBoard text={String(identity?.commitment)} />
+                      </Badge>
+                      <Input
+                        defaultValue={String(identity?.commitment)}
+                        type="text"
+                        className="text-md text-center bg-zinc-900 mt-2 flex justify-center items-center"
+                      />
                     </div>
                   </div>
-                  <div className="mt-5 text-center rounded pt-2 px-2">
-                    <Badge>Private Key</Badge>
-                    <div className="text-md mt-2 flex justify-center items-center">
-                      {String(identity?.privateKey)}
-                      <CopyToClipBoard text={String(identity?.privateKey)} />
+
+                  <div className="grid grid-cols-3 gap-5 mt-5">
+                    <div className="text-center">
+                      <Badge
+                        variant={"outline"}
+                        className=" hover:bg-white hover:text-black"
+                      >
+                        Karma GroupId{" "}
+                        <CopyToClipBoard
+                          text={String(identity?.publicKey[0])}
+                        />
+                      </Badge>
+                      <Input
+                        value={String(groupId)}
+                        type="text"
+                        onChange={(e) => setGroupId(e.target.value)}
+                        className="text-md text-center bg-zinc-900 mt-2 flex justify-center items-center"
+                      />
+                    </div>
+
+                    <div className="text-center">
+                      <Badge
+                        variant={"outline"}
+                        className=" hover:bg-white hover:text-black"
+                      >
+                        Message Hash
+                        <CopyToClipBoard text={String(message)} />
+                      </Badge>
+                      <Input
+                        value={String(message)}
+                        type="text"
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="text-md text-center bg-zinc-900 mt-2 flex justify-center items-center"
+                      />
+                    </div>
+                    <div className="text-center rounded">
+                      <Badge
+                        variant={"outline"}
+                        className=" hover:bg-white hover:text-black"
+                      >
+                        Scope <CopyToClipBoard text={String(scope)} />
+                      </Badge>
+                      <Input
+                        onChange={(e) => setScope(parseInt(e.target.value))}
+                        value={String(scope)}
+                        type="text"
+                        className="text-md text-center bg-zinc-900 mt-2 flex justify-center items-center"
+                      />
                     </div>
                   </div>
-                  <div className="mt-5 text-center rounded pt-2 px-2">
-                    <Badge>Commitment</Badge>
-                    <div className="text-md mt-2 flex justify-center items-center">
-                      {String(identity?.commitment)}
-                      <CopyToClipBoard text={String(identity?.commitment)} />
-                    </div>
+
+                  {/* Proof Box */}
+                  <div className="text-center w-full mt-5">
+                    <Badge
+                      variant={"outline"}
+                      className="mt-2 ring-2 ring-zinc-200 hover:bg-white hover:text-black"
+                    >
+                      Copy Generated Proof
+                      <CopyToClipBoard
+                        text={btoa(JSON.stringify(proof)) || ""}
+                      />
+                    </Badge>
+                    <Textarea
+                      value={
+                        proof ? btoa(JSON.stringify(proof)) : "Generating..."
+                      }
+                      className="rounded-lg w-full text-justify h-[10vh] overflow-clip bg-zinc-900 ring-zinc-900 mt-5 placeholder:text-zinc-600"
+                      placeholder="Paste your message here to generate proof."
+                    />
+                    <Button
+                      onClick={() => {
+                        setProof(null);
+                        generateProof(identity, group, message, scope).then(
+                          (proof) => {
+                            console.log("Proof:", proof);
+                            setProof(proof);
+                          }
+                        );
+                      }}
+                      variant={"outline"}
+                      className="bg-zinc-900 anim hover:bg-white hover:text-black mt-3 w-full "
+                    >
+                      Generate ⚙️
+                    </Button>
+                    <Button
+                      variant={"secondary"}
+                      onClick={() => {
+                        window.open(
+                          `${callbackUrl}/?proof=${btoa(JSON.stringify(proof))}`
+                        );
+                      }}
+                      className="bg-zinc-900 hover:bg-white hover:text-black mt-3 w-full "
+                    >
+                      Send Proof ↗️
+                    </Button>
                   </div>
                 </div>
               )}
@@ -159,89 +320,7 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="mt-10 ">
-        <h3 className="text-md ml-5 text-zinc-600 mb-1">
-          Quick Links for{" "}
-          <span className="font-bold text-md">
-            <a target="_blank" href="https://www.karmahq.xyz/">
-              karmahq.xyz
-            </a>
-          </span>
-        </h3>
-
-        <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-          <a
-            href="https://gap.karmahq.xyz/"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              GAP
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              GAP is a protocol to help community get visibility into grantee
-              progress and grantees to build reputation.
-            </p>
-          </a>
-
-          <a
-            href="https://www.karmahq.xyz/daos#delegate-dashboards"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Delegate Dashboards{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Enable DAOs to facilitate delegate self-onboarding and information
-              management.
-            </p>
-          </a>
-
-          <a
-            href="https://www.nounskarma.xyz/"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              NounsKarma{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              A reputation primitive in the Nouns Ecosystem that can be used by
-              anyone to build tools and applications.
-            </p>
-          </a>
-
-          <a
-            href="https://warpcast.com/karmabot"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Karmabot{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-              Bot to help you build reputation. Now available on Farcaster!
-            </p>
-          </a>
-        </div>
-      </section>
+      <Footer />
     </main>
   );
 }
