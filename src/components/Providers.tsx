@@ -2,7 +2,6 @@
 import {
   getDefaultConfig,
   RainbowKitProvider,
-  lightTheme,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
@@ -18,6 +17,8 @@ import {
   arbitrumSepolia,
 } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { Suspense } from "react";
+
 const queryClient = new QueryClient();
 
 const config = getDefaultConfig({
@@ -57,7 +58,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
           </ThemeProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
