@@ -25,7 +25,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 
-function getDomain(callbackUrl: string): string {
+function getDomain(callbackUrl: string): string | null {
   const matches = callbackUrl.match(
     /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im
   );
