@@ -270,9 +270,17 @@ export default function Home() {
                       variant={"secondary"}
                       disabled={!callbackUrl}
                       onClick={() => {
-                        window.open(
-                          `${callbackUrl}/?proof=${btoa(JSON.stringify(proof))}`
-                        );
+                        callbackUrl.includes("?") // Check if callbackUrl already has query params
+                          ? window.open(
+                              `${callbackUrl}&proof=${btoa(
+                                JSON.stringify(proof)
+                              )}`
+                            )
+                          : window.open(
+                              `${callbackUrl}?proof=${btoa(
+                                JSON.stringify(proof)
+                              )}`
+                            );
                       }}
                       className="bg-zinc-900 hover:bg-white hover:text-black mt-3 w-full "
                     >
