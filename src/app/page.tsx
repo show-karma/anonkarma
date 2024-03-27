@@ -10,6 +10,7 @@ import { Group } from "@semaphore-protocol/group";
 import { Identity } from "@semaphore-protocol/identity";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { SemaphoreSubgraph } from "@semaphore-protocol/data";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/mode-toggle";
@@ -23,6 +24,13 @@ import {
   Tooltip,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+
+function getDomain(callbackUrl: string): string {
+  const matches = callbackUrl.match(
+    /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im
+  );
+  return matches && matches[1];
+}
 
 function CopyToClipBoard({ text }: { text: string }) {
   return (
@@ -69,6 +77,7 @@ export default function Home() {
   const [group, setGroup] = useState<Group>(new Group([]));
   const [showIdentity, setShowIdentity] = useState(false);
   const [proof, setProof] = useState<any | null>(null);
+  const [proofError, setProofError] = useState<string>("");
 
   const [groupId, setGroupId] = useState<string | null>(null);
   const [scope, setScope] = useState<number>(0);
@@ -90,34 +99,47 @@ export default function Home() {
     } catch (e) {
       console.error(e);
       setProof(null);
+      setProofError("Invalid Proof Data");
     }
   }, [searchParams]);
 
   useEffect(() => {
     if (identity && groupId && message && scope && callbackUrl) {
-      axios
-        .get(`http://localhost:3002/semaphores/groups/${groupId}`)
+      const subgraph = new SemaphoreSubgraph(
+        "https://api.studio.thegraph.com/query/63515/semaphores-op-sepolia/version/latest"
+      );
+
+      subgraph
+        .getGroup(groupId, {
+          members: true,
+        })
         .then((karmaGroup) => {
-          console.log(karmaGroup);
-          setGroup(
-            new Group(
-              karmaGroup.data.members.map((member: string) => BigInt(member))
-            )
-          );
+          setGroup(new Group(karmaGroup?.members));
 
           if (group.members.length > 0) {
-            generateProof(identity, group, message, scope).then((proof) => {
-              console.log("Proof:", proof);
-              setProof(proof);
-            });
+            // Check if identity is part of the group)
+            if (group.indexOf(identity.commitment) !== -1) {
+              generateProof(identity, group, message, scope)
+                .then((proof) => {
+                  console.log("Proof:", proof);
+                  setProof(proof);
+                })
+                .catch((e) => {
+                  console.error(e);
+                  setProofError("Invalid Proof Data");
+                });
+            } else {
+              setProofError("Identity not part of the group");
+            }
           }
         })
         .catch((e) => {
           console.error(e);
+          setProofError("Invalid Group Id");
           return { data: { members: [] } };
         });
     }
-  }, [groupId, message, scope, identity, callbackUrl, group.members.length]);
+  }, [groupId, message, scope, identity, callbackUrl]);
 
   return (
     <main className="container flex min-h-screen flex-col items-center justify-between p-10">
@@ -270,7 +292,11 @@ export default function Home() {
                     </Badge>
                     <Textarea
                       value={
-                        proof ? btoa(JSON.stringify(proof)) : "Generating..."
+                        proof
+                          ? btoa(JSON.stringify(proof))
+                          : !message || !groupId || !scope || !callbackUrl
+                          ? "Please fill all the fields to generate proof."
+                          : proofError || "Proof will be generated here..."
                       }
                       className="rounded-lg w-full text-justify h-[10vh] overflow-clip bg-zinc-900 ring-zinc-900 mt-5 placeholder:text-zinc-600"
                       placeholder="Paste your message here to generate proof."
@@ -292,6 +318,7 @@ export default function Home() {
                     </Button>
                     <Button
                       variant={"secondary"}
+                      disabled={!callbackUrl}
                       onClick={() => {
                         window.open(
                           `${callbackUrl}/?proof=${btoa(JSON.stringify(proof))}`
@@ -299,7 +326,11 @@ export default function Home() {
                       }}
                       className="bg-zinc-900 hover:bg-white hover:text-black mt-3 w-full "
                     >
-                      Send Proof ↗️
+                      Send Proof to callbackUrl:{" "}
+                      <span className="ml-1 font-bold">
+                        {getDomain(callbackUrl)}
+                      </span>
+                      ↗️
                     </Button>
                   </div>
                 </div>
